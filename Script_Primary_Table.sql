@@ -104,10 +104,3 @@ FROM t_price_temporary_2 tpt2;
 
 ALTER TABLE t_Daniel_Rizak_project_SQL_primary_final
 ADD COLUMN id INT NOT NULL AUTO_INCREMENT PRIMARY KEY;
-
-
-
-
-
-
-
