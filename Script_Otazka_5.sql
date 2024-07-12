@@ -11,7 +11,8 @@ SELECT base.country, tab1.`year`, tab1.value_current_year/tab1.value_prev_year A
 FROM t_daniel_rizak_project_sql_secondary_final base
 JOIN t_daniel_rizak_project_sql_primary_final tab1
 	ON base.`year`+1 = tab1.`year`
-	AND base.country = 'Czech Republic' AND tab1.unit = 'czk';
+	AND base.country = 'Czech Republic'
+	AND tab1.unit = 'czk';
 	
 -- Kontrola správného posunutí o 19 pozic
 SELECT `year`, value_current_year/value_prev_year AS index_wage, category_name 
@@ -30,10 +31,12 @@ SELECT tab1.country, base.`year`, base.value_current_year/base.value_prev_year A
 FROM t_daniel_rizak_project_sql_primary_final base
 JOIN t_daniel_rizak_project_sql_secondary_final tab1
 	ON base.`year` = tab1.`year`+1
-	AND tab1.country = 'Czech Republic' AND base.unit = 'czk'
+	AND tab1.country = 'Czech Republic'
+	AND base.unit = 'czk'
 JOIN t_daniel_rizak_project_sql_secondary_final tab2
 	ON base.`year` = tab2.`year`
-	AND tab2.country = 'Czech Republic' AND base.unit = 'czk';
+	AND tab2.country = 'Czech Republic'
+	AND base.unit = 'czk';
 
 	
 -- CENY a HDP. (Nelze použít variantu s LEAD, kvůli jakostnímu vínu (měřeno jen 4 roky))
@@ -47,19 +50,19 @@ JOIN t_daniel_rizak_project_sql_secondary_final tab1
 	AND tab1.country = 'Czech Republic' AND base.unit != 'czk'
 JOIN t_daniel_rizak_project_sql_secondary_final tab2
 	ON base.`year` = tab2.`year`
-	AND tab2.country = 'Czech Republic' AND base.unit != 'czk' AND base.`year` >2006;
+	AND tab2.country = 'Czech Republic' AND base.unit != 'czk' AND base.`year` > 2006;
 
 
 -- Indexy růstu - vzájemné závislosti: MZDY
 SELECT trends1.*,
 		CASE
-			WHEN trends1.wage_grow_same_year >1 AND trends1.GDP_grow_prev_year >1 THEN 1
-			WHEN trends1.wage_grow_same_year <1 AND trends1.GDP_grow_prev_year <1 THEN 1
+			WHEN trends1.wage_grow_same_year > 1 AND trends1.GDP_grow_prev_year > 1 THEN 1
+			WHEN trends1.wage_grow_same_year < 1 AND trends1.GDP_grow_prev_year < 1 THEN 1
 			ELSE 0
 		END wages_and_Y_previous,
 		CASE
-			WHEN trends1.wage_grow_same_year >1 AND trends1.GDP_grow_same_year >1 THEN 1
-			WHEN trends1.wage_grow_same_year <1 AND trends1.GDP_grow_same_year <1 THEN 1
+			WHEN trends1.wage_grow_same_year > 1 AND trends1.GDP_grow_same_year > 1 THEN 1
+			WHEN trends1.wage_grow_same_year < 1 AND trends1.GDP_grow_same_year < 1 THEN 1
 			ELSE 0
 		END wages_and_Y_same
 FROM (
@@ -75,28 +78,31 @@ FROM (
 	
 -- Indexy růstu - vzájemné závislosti: CENY
 SELECT trends2.*,
-		CASE
-			WHEN trends2.price_grow_same_year >1 AND trends2.GDP_grow_prev_year >1 THEN 1
-			WHEN trends2.price_grow_same_year <1 AND trends2.GDP_grow_prev_year <1 THEN 1
-			ELSE 0
-		END prices_and_Y_previous,
-		CASE
-			WHEN trends2.price_grow_same_year >1 AND trends2.GDP_grow_same_year >1 THEN 1
-			WHEN trends2.price_grow_same_year <1 AND trends2.GDP_grow_same_year <1 THEN 1
-			ELSE 0
-		END prices_and_Y_same
+	CASE
+		WHEN trends2.price_grow_same_year > 1 AND trends2.GDP_grow_prev_year > 1 THEN 1
+		WHEN trends2.price_grow_same_year < 1 AND trends2.GDP_grow_prev_year < 1 THEN 1
+		ELSE 0
+	END prices_and_Y_previous,
+	CASE
+		WHEN trends2.price_grow_same_year > 1 AND trends2.GDP_grow_same_year > 1 THEN 1
+		WHEN trends2.price_grow_same_year < 1 AND trends2.GDP_grow_same_year < 1 THEN 1
+		ELSE 0
+	END prices_and_Y_same
 FROM (
-		SELECT tab1.country, base.`year`, base.value_current_year/base.value_prev_year AS price_grow_same_year,
-				tab1.GDP_current_year/tab1.GDP_previous_year AS GDP_grow_prev_year,
-				tab2.GDP_current_year/tab2.GDP_previous_year AS GDP_grow_same_year,
-				base.category_name, base.region_name 
-		FROM t_daniel_rizak_project_sql_primary_final base
-		JOIN t_daniel_rizak_project_sql_secondary_final tab1
-			ON base.`year` = tab1.`year`+1
-			AND tab1.country = 'Czech Republic' AND base.unit != 'czk'
-		JOIN t_daniel_rizak_project_sql_secondary_final tab2
-			ON base.`year` = tab2.`year`
-			AND tab2.country = 'Czech Republic' AND base.unit != 'czk' AND base.`year` >2006
+	SELECT tab1.country, base.`year`, base.value_current_year/base.value_prev_year AS price_grow_same_year,
+		tab1.GDP_current_year/tab1.GDP_previous_year AS GDP_grow_prev_year,
+		tab2.GDP_current_year/tab2.GDP_previous_year AS GDP_grow_same_year,
+		base.category_name, base.region_name 
+	FROM t_daniel_rizak_project_sql_primary_final base
+	JOIN t_daniel_rizak_project_sql_secondary_final tab1
+		ON base.`year` = tab1.`year`+1
+		AND tab1.country = 'Czech Republic' 
+		AND base.unit != 'czk'
+	JOIN t_daniel_rizak_project_sql_secondary_final tab2
+		ON base.`year` = tab2.`year`
+		AND tab2.country = 'Czech Republic' 
+		AND base.unit != 'czk' 
+		AND base.`year` > 2006
 ) AS trends2;
 
 
@@ -105,13 +111,13 @@ SELECT sum(wages_and_Y_previous), sum(wages_and_Y_same), count(1) AS total_cases
 FROM (
 	SELECT trends1.*,
 		CASE
-			WHEN trends1.wage_grow_same_year >1 AND trends1.GDP_grow_prev_year >1 THEN 1
-			WHEN trends1.wage_grow_same_year <1 AND trends1.GDP_grow_prev_year <1 THEN 1
+			WHEN trends1.wage_grow_same_year > 1 AND trends1.GDP_grow_prev_year > 1 THEN 1
+			WHEN trends1.wage_grow_same_year < 1 AND trends1.GDP_grow_prev_year < 1 THEN 1
 			ELSE 0
 		END wages_and_Y_previous,
 		CASE
-			WHEN trends1.wage_grow_same_year >1 AND trends1.GDP_grow_same_year >1 THEN 1
-			WHEN trends1.wage_grow_same_year <1 AND trends1.GDP_grow_same_year <1 THEN 1
+			WHEN trends1.wage_grow_same_year > 1 AND trends1.GDP_grow_same_year > 1 THEN 1
+			WHEN trends1.wage_grow_same_year < 1 AND trends1.GDP_grow_same_year < 1 THEN 1
 			ELSE 0
 		END wages_and_Y_same
 	FROM (
@@ -122,7 +128,8 @@ FROM (
 		FROM t_daniel_rizak_project_sql_secondary_final base
 		JOIN t_daniel_rizak_project_sql_primary_final tab1
 			ON base.`year`+1 = tab1.`year`
-			AND base.country = 'Czech Republic' AND tab1.unit = 'czk'
+			AND base.country = 'Czech Republic' 
+			AND tab1.unit = 'czk'
 	) trends1
 ) frequency1;
 
@@ -131,27 +138,30 @@ SELECT sum(prices_and_Y_previous), sum(prices_and_Y_same), count(1) AS total_cas
 FROM (
 	SELECT trends2.*,
 		CASE
-			WHEN trends2.price_grow_same_year >1 AND trends2.GDP_grow_prev_year >1 THEN 1
-			WHEN trends2.price_grow_same_year <1 AND trends2.GDP_grow_prev_year <1 THEN 1
+			WHEN trends2.price_grow_same_year > 1 AND trends2.GDP_grow_prev_year > 1 THEN 1
+			WHEN trends2.price_grow_same_year < 1 AND trends2.GDP_grow_prev_year < 1 THEN 1
 			ELSE 0
 		END prices_and_Y_previous,
 		CASE
-			WHEN trends2.price_grow_same_year >1 AND trends2.GDP_grow_same_year >1 THEN 1
-			WHEN trends2.price_grow_same_year <1 AND trends2.GDP_grow_same_year <1 THEN 1
+			WHEN trends2.price_grow_same_year > 1 AND trends2.GDP_grow_same_year > 1 THEN 1
+			WHEN trends2.price_grow_same_year < 1 AND trends2.GDP_grow_same_year < 1 THEN 1
 			ELSE 0
 		END prices_and_Y_same
 	FROM (
 		SELECT tab1.country, base.`year`, base.value_current_year/base.value_prev_year AS price_grow_same_year,
-				tab1.GDP_current_year/tab1.GDP_previous_year AS GDP_grow_prev_year,
-				tab2.GDP_current_year/tab2.GDP_previous_year AS GDP_grow_same_year,
-				base.category_name, base.region_name 
+			tab1.GDP_current_year/tab1.GDP_previous_year AS GDP_grow_prev_year,
+			tab2.GDP_current_year/tab2.GDP_previous_year AS GDP_grow_same_year,
+			base.category_name, base.region_name 
 		FROM t_daniel_rizak_project_sql_primary_final base
 		JOIN t_daniel_rizak_project_sql_secondary_final tab1
 			ON base.`year` = tab1.`year`+1
-			AND tab1.country = 'Czech Republic' AND base.unit != 'czk'
+			AND tab1.country = 'Czech Republic' 
+			AND base.unit != 'czk'
 		JOIN t_daniel_rizak_project_sql_secondary_final tab2
 			ON base.`year` = tab2.`year`
-			AND tab2.country = 'Czech Republic' AND base.unit != 'czk' AND base.`year` >2006
+			AND tab2.country = 'Czech Republic'
+			AND base.unit != 'czk' 
+			AND base.`year` > 2006
 	) AS trends2
 ) frequency2;
 
@@ -161,13 +171,13 @@ SELECT `year`, sum(wages_and_Y_previous), count(wages_and_Y_previous), sum(wages
 FROM (
 	SELECT trends1.*,
 		CASE
-			WHEN trends1.wage_grow_same_year >1 AND trends1.GDP_grow_prev_year >1 THEN 1
-			WHEN trends1.wage_grow_same_year <1 AND trends1.GDP_grow_prev_year <1 THEN 1
+			WHEN trends1.wage_grow_same_year > 1 AND trends1.GDP_grow_prev_year > 1 THEN 1
+			WHEN trends1.wage_grow_same_year < 1 AND trends1.GDP_grow_prev_year < 1 THEN 1
 			ELSE 0
 		END wages_and_Y_previous,
 		CASE
-			WHEN trends1.wage_grow_same_year >1 AND trends1.GDP_grow_same_year >1 THEN 1
-			WHEN trends1.wage_grow_same_year <1 AND trends1.GDP_grow_same_year <1 THEN 1
+			WHEN trends1.wage_grow_same_year > 1 AND trends1.GDP_grow_same_year > 1 THEN 1
+			WHEN trends1.wage_grow_same_year < 1 AND trends1.GDP_grow_same_year < 1 THEN 1
 			ELSE 0
 		END wages_and_Y_same
 	FROM (
@@ -178,7 +188,8 @@ FROM (
 		FROM t_daniel_rizak_project_sql_secondary_final base
 		JOIN t_daniel_rizak_project_sql_primary_final tab1
 			ON base.`year`+1 = tab1.`year`
-			AND base.country = 'Czech Republic' AND tab1.unit = 'czk'
+			AND base.country = 'Czech Republic'
+			AND tab1.unit = 'czk'
 	) trends1
 ) frequency1
 GROUP BY YEAR;
@@ -188,13 +199,13 @@ SELECT `year`, sum(prices_and_Y_previous), count(prices_and_Y_previous), sum(pri
 FROM (
 	SELECT trends2.*,
 		CASE
-			WHEN trends2.price_grow_same_year >1 AND trends2.GDP_grow_prev_year >1 THEN 1
-			WHEN trends2.price_grow_same_year <1 AND trends2.GDP_grow_prev_year <1 THEN 1
+			WHEN trends2.price_grow_same_year > 1 AND trends2.GDP_grow_prev_year > 1 THEN 1
+			WHEN trends2.price_grow_same_year < 1 AND trends2.GDP_grow_prev_year < 1 THEN 1
 			ELSE 0
 		END prices_and_Y_previous,
 		CASE
-			WHEN trends2.price_grow_same_year >1 AND trends2.GDP_grow_same_year >1 THEN 1
-			WHEN trends2.price_grow_same_year <1 AND trends2.GDP_grow_same_year <1 THEN 1
+			WHEN trends2.price_grow_same_year > 1 AND trends2.GDP_grow_same_year > 1 THEN 1
+			WHEN trends2.price_grow_same_year < 1 AND trends2.GDP_grow_same_year < 1 THEN 1
 			ELSE 0
 		END prices_and_Y_same
 	FROM (
@@ -205,17 +216,13 @@ FROM (
 		FROM t_daniel_rizak_project_sql_primary_final base
 		JOIN t_daniel_rizak_project_sql_secondary_final tab1
 			ON base.`year` = tab1.`year`+1
-			AND tab1.country = 'Czech Republic' AND base.unit != 'czk'
+			AND tab1.country = 'Czech Republic'
+			AND base.unit != 'czk'
 		JOIN t_daniel_rizak_project_sql_secondary_final tab2
 			ON base.`year` = tab2.`year`
-			AND tab2.country = 'Czech Republic' AND base.unit != 'czk' AND base.`year` >2006
+			AND tab2.country = 'Czech Republic'
+			AND base.unit != 'czk'
+			AND base.`year` > 2006
 	) AS trends2
 ) frequency2
 GROUP BY YEAR;
-
-
-
-
-
-
-
