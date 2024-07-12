@@ -47,10 +47,13 @@ SELECT tab1.country, base.`year`, base.value_current_year/base.value_prev_year A
 FROM t_daniel_rizak_project_sql_primary_final base
 JOIN t_daniel_rizak_project_sql_secondary_final tab1
 	ON base.`year` = tab1.`year`+1
-	AND tab1.country = 'Czech Republic' AND base.unit != 'czk'
+	AND tab1.country = 'Czech Republic' 
+	AND base.unit != 'czk'
 JOIN t_daniel_rizak_project_sql_secondary_final tab2
 	ON base.`year` = tab2.`year`
-	AND tab2.country = 'Czech Republic' AND base.unit != 'czk' AND base.`year` > 2006;
+	AND tab2.country = 'Czech Republic' 
+	AND base.unit != 'czk' 
+	AND base.`year` > 2006;
 
 
 -- Indexy růstu - vzájemné závislosti: MZDY
@@ -73,7 +76,8 @@ FROM (
 	FROM t_daniel_rizak_project_sql_secondary_final base
 	JOIN t_daniel_rizak_project_sql_primary_final tab1
 		ON base.`year`+1 = tab1.`year`
-		AND base.country = 'Czech Republic' AND tab1.unit = 'czk'
+		AND base.country = 'Czech Republic' 
+		AND tab1.unit = 'czk'
 ) trends1;
 	
 -- Indexy růstu - vzájemné závislosti: CENY
