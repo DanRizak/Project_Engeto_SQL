@@ -39,7 +39,7 @@ JOIN (
 		AND category_code = '111301'
 ) fin2
 	ON fin1.`year` = fin2.`year`
-	ORDER BY bread_kg_for_wage
+ORDER BY bread_kg_for_wage
 
 	
 -- Upravime dotaz pro pro mléko:
@@ -60,4 +60,4 @@ JOIN (
 		AND category_code = '114201'
 ) fin2
 	ON fin1.`year` = fin2.`year`
-	ORDER BY milk_litres_for_wage;
+ORDER BY milk_litres_for_wage;
