@@ -21,7 +21,8 @@ FROM (
 		ELSE 0
 		END AS growth
 	FROM t_daniel_rizak_project_sql_primary_final tdrpspf 
-	WHERE unit = 'czk' AND value_prev_year IS NOT NULL
+	WHERE unit = 'czk' 
+		AND value_prev_year IS NOT NULL
 ) AS gr
 WHERE growth = 0
 ORDER BY category_name, `year`;
