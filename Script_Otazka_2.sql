@@ -29,7 +29,8 @@ FROM (
 	SELECT `year`, value_current_year, category_name    -- prumerne vyplaty ve 2006 a 2018 podle odvetvi
 	FROM t_daniel_rizak_project_sql_primary_final 
 	WHERE unit = 'czk' 
-		AND `year` IN (2006, 2018)) fin1
+		AND `year` IN (2006, 2018)
+) fin1
 JOIN (
 	SELECT `year`, value_current_year, category_name, region_name, category_code   -- prumerne ceny chleba ve 2006 a 2018 podle kraju
 	FROM t_daniel_rizak_project_sql_primary_final
