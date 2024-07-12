@@ -19,14 +19,14 @@ WITH half_table AS (
 		SELECT c.country 
 		FROM countries c 
 		WHERE continent = 'Europe'
-	)
-	AND e.`year` BETWEEN 2004 AND 2018)
+)
+		AND e.`year` BETWEEN 2004 AND 2018)
 SELECT ht1.country, ht1.`year`, ht1.GDP AS GDP_current_year, ht2.GDP AS GDP_previous_year,
 	ht1.population, ht1.taxes, ht1.fertility, ht1.mortaliy_under5 AS mortality_under5
 FROM half_table ht1
 JOIN half_table ht2
 	ON ht1.country = ht2.country
-	AND ht1.`year` = ht2.`year`+1
+		AND ht1.`year` = ht2.`year`+1
 ORDER BY country, `year` ASC;
 
 
@@ -41,11 +41,5 @@ WHERE e.country IN (
 	FROM countries c 
 	WHERE continent = 'Europe'
 )
-AND e.`year` BETWEEN 2004 AND 2018
+	AND e.`year` BETWEEN 2004 AND 2018
 ORDER BY country, `year` ASC;
-
-
-
-
-
-
