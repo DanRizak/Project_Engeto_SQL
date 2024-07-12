@@ -9,7 +9,9 @@ FROM (
 		ELSE 0
 		END AS growth
 	FROM t_daniel_rizak_project_sql_primary_final tdrpspf 
-	WHERE unit = 'czk' AND value_prev_year IS NOT NULL) AS gr;
+	WHERE unit = 'czk'
+		AND value_prev_year IS NOT NULL
+) AS gr;
 	
 -- jen případy, kde mzdy klesají, tj. kde growth je roven 0:
 SELECT `year`, category_name, growth
@@ -19,7 +21,8 @@ FROM (
 		ELSE 0
 		END AS growth
 	FROM t_daniel_rizak_project_sql_primary_final tdrpspf 
-	WHERE unit = 'czk' AND value_prev_year IS NOT NULL) AS gr
+	WHERE unit = 'czk' AND value_prev_year IS NOT NULL
+) AS gr
 WHERE growth = 0
 ORDER BY category_name, `year`;
 
@@ -31,7 +34,9 @@ FROM (
 		ELSE 0
 		END AS growth
 	FROM t_daniel_rizak_project_sql_primary_final tdrpspf 
-	WHERE unit = 'czk' AND value_prev_year IS NOT NULL) AS gr
+	WHERE unit = 'czk'
+		AND value_prev_year IS NOT NULL
+) AS gr
 WHERE growth = 0
 ORDER BY `year`, category_name;
 
@@ -39,4 +44,3 @@ ORDER BY `year`, category_name;
  - klik pravým tlačítkem na tabulku, vybrat "Export data", vybrat CSV, klik 4x "Next", klik na "Proceed"
  - otevřít v Excelu: klik na horní lištu "Data" a na kartě Get&Transform Data vybrat "From Text/CSV", vybrat soubor .csv
  - upravit, uložit; importováno do Průvodní listiny  /*
-
