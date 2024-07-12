@@ -8,12 +8,14 @@ FROM (
 	SELECT payroll_year AS `year`, industry_branch_code, avg(value) AS value_current_year
 	FROM czechia_payroll cp 
 	WHERE value_type_code = 5958 AND industry_branch_code IS NOT NULL AND payroll_year BETWEEN 2005 AND 2018
-	GROUP BY payroll_year, industry_branch_code) AS pay1
+	GROUP BY payroll_year, industry_branch_code
+) AS pay1
 LEFT JOIN (
 	SELECT payroll_year AS `year`, industry_branch_code, avg(value) AS value_prev_year
 	FROM czechia_payroll cp 
 	WHERE value_type_code = 5958 AND industry_branch_code IS NOT NULL AND payroll_year BETWEEN 2005 AND 2018
-	GROUP BY payroll_year, industry_branch_code) AS pay2
+	GROUP BY payroll_year, industry_branch_code
+) AS pay2
 	ON pay1.industry_branch_code = pay2.industry_branch_code
 	AND pay1.year = pay2.year+1;
 
@@ -23,14 +25,16 @@ FROM (
 	SELECT payroll_year AS `year`, industry_branch_code, avg(value) AS value_current_year
 	FROM czechia_payroll cp 
 	WHERE value_type_code = 5958 AND calculation_code = 100 AND industry_branch_code IS NOT NULL AND payroll_year BETWEEN 2005 AND 2018
-	GROUP BY payroll_year, industry_branch_code) AS pay1
+	GROUP BY payroll_year, industry_branch_code
+) AS pay1
 LEFT JOIN (
 	SELECT payroll_year AS `year`, industry_branch_code, avg(value) AS value_prev_year
 	FROM czechia_payroll cp 
 	WHERE value_type_code = 5958 AND calculation_code = 100 AND industry_branch_code IS NOT NULL AND payroll_year BETWEEN 2005 AND 2018
-	GROUP BY payroll_year, industry_branch_code) AS pay2
+	GROUP BY payroll_year, industry_branch_code
+) AS pay2
 	ON pay1.industry_branch_code = pay2.industry_branch_code
-	AND pay1.year = pay2.year+1
+		AND pay1.year = pay2.year+1
 LEFT JOIN czechia_payroll_industry_branch cpib
 	ON pay1.industry_branch_code = cpib.code;
 
@@ -59,15 +63,17 @@ FROM (
 	SELECT YEAR(date_to) AS `year`, category_code, region_code, avg(value) AS value_current_year
 	FROM czechia_price cp  
 	WHERE YEAR(date_to) BETWEEN 2005 AND 2018 AND region_code IS NOT NULL
-	GROUP BY YEAR(date_to), category_code, region_code) prices
+	GROUP BY YEAR(date_to), category_code, region_code
+) prices
 LEFT JOIN (
 	SELECT YEAR(date_to) AS `year`, category_code, region_code, avg(value) AS value_prev_year
 	FROM czechia_price cp  
 	WHERE YEAR(date_to) BETWEEN 2005 AND 2018 AND region_code IS NOT NULL
-	GROUP BY YEAR(date_to), category_code, region_code) prices2
+	GROUP BY YEAR(date_to), category_code, region_code
+) prices2
 	ON prices.category_code = prices2.category_code
-	AND prices.region_code = prices2.region_code
-	AND prices.year = prices2.year+1;
+		AND prices.region_code = prices2.region_code
+		AND prices.year = prices2.year+1;
 
 CREATE TABLE t_price_temporary AS
 SELECT prices.year, prices.value_current_year, prices2.value_prev_year, prices.category_code, prices.region_code
@@ -75,15 +81,17 @@ FROM (
 	SELECT YEAR(date_to) AS `year`, category_code, region_code, avg(value) AS value_current_year
 	FROM czechia_price cp  
 	WHERE YEAR(date_to) BETWEEN 2005 AND 2018 AND region_code IS NOT NULL
-	GROUP BY YEAR(date_to), category_code, region_code) prices
+	GROUP BY YEAR(date_to), category_code, region_code
+) prices
 LEFT JOIN (
 	SELECT YEAR(date_to) AS `year`, category_code, region_code, avg(value) AS value_prev_year
 	FROM czechia_price cp  
 	WHERE YEAR(date_to) BETWEEN 2005 AND 2018 AND region_code IS NOT NULL
-	GROUP BY YEAR(date_to), category_code, region_code) prices2
+	GROUP BY YEAR(date_to), category_code, region_code
+) prices2
 	ON prices.category_code = prices2.category_code
-	AND prices.region_code = prices2.region_code
-	AND prices.year = prices2.year+1;
+		AND prices.region_code = prices2.region_code
+		AND prices.year = prices2.year+1;
 
 -- druhá dočasná tabulka s cenami:
 CREATE TABLE t_price_temporary_2 AS
