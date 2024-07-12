@@ -23,12 +23,14 @@ FROM (
 	SELECT `year`, avg(value_current_year/value_prev_year) AS grow_prices, category_name
 	FROM t_daniel_rizak_project_sql_primary_final 
 	WHERE unit != 'czk'
-	GROUP BY category_name, `year`) pri
+	GROUP BY category_name, `year`
+) pri
 JOIN (
 	SELECT `year`, avg(value_current_year/value_prev_year) AS grow_wages
 	FROM t_daniel_rizak_project_sql_primary_final
 	WHERE unit = 'czk'
-	GROUP BY `year`) pay
+	GROUP BY `year`
+) pay
 	ON pri.`year` = pay.`year`
 HAVING pri.grow_prices != 'czk';
 
@@ -42,13 +44,16 @@ FROM (
 	SELECT `year`, avg(value_current_year/value_prev_year) AS grow_prices, category_name
 	FROM t_daniel_rizak_project_sql_primary_final 
 	WHERE unit != 'czk'
-	GROUP BY category_name, `year`) pri
+	GROUP BY category_name, `year`
+) pri
 JOIN (
 	SELECT `year`, avg(value_current_year/value_prev_year) AS grow_wages
 	FROM t_daniel_rizak_project_sql_primary_final
 	WHERE unit = 'czk'
-	GROUP BY `year`) pay
+	GROUP BY `year`
+) pay
 	ON pri.`year` = pay.`year`
-HAVING pri.grow_prices IS NOT NULL AND prices_growth_much_higher LIKE 'YES'
+HAVING pri.grow_prices IS NOT NULL 
+	AND prices_growth_much_higher LIKE 'YES'
 ORDER BY `year`;
 
